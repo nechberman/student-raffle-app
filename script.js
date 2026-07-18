@@ -561,6 +561,64 @@
   }
 
   // ==================================================
+  // FULLSCREEN (for projecting the live raffle draw)
+  // ==================================================
+  function getFullscreenElement() {
+    return (
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement ||
+      null
+    );
+  }
+
+  function requestFullscreenOn(el) {
+    const fn =
+      el.requestFullscreen ||
+      el.webkitRequestFullscreen ||
+      el.mozRequestFullScreen ||
+      el.msRequestFullscreen;
+    if (fn) return fn.call(el);
+    return Promise.reject(new Error("Fullscreen API not supported"));
+  }
+
+  function exitFullscreen() {
+    const fn =
+      document.exitFullscreen ||
+      document.webkitExitFullscreen ||
+      document.mozCancelFullScreen ||
+      document.msExitFullscreen;
+    if (fn) return fn.call(document);
+    return Promise.reject(new Error("Fullscreen API not supported"));
+  }
+
+  function toggleFullscreen() {
+    if (getFullscreenElement()) {
+      exitFullscreen();
+    } else {
+      requestFullscreenOn(document.documentElement).catch(() => {
+        showToast("⚠️ הדפדפן חסם מסך מלא");
+      });
+    }
+  }
+
+  function updateFullscreenBtnIcon() {
+    const btn = document.getElementById("wheelFullscreenBtn");
+    if (!btn) return;
+    const active = !!getFullscreenElement();
+    btn.textContent = active ? "🗗" : "⛶";
+    btn.title = active ? "יציאה ממסך מלא" : "מסך מלא";
+  }
+
+  function initFullscreen() {
+    document.getElementById("wheelFullscreenBtn").addEventListener("click", toggleFullscreen);
+    ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
+      document.addEventListener(evt, updateFullscreenBtnIcon);
+    });
+  }
+
+  // ==================================================
   // CONFETTI (lightweight, no external libs)
   // ==================================================
   let confettiAnimId = null;
@@ -649,6 +707,7 @@
     initStudentsTab();
     initAssignTab();
     initWheelModal();
+    initFullscreen();
     initSaveButton();
 
     renderStudentsList();

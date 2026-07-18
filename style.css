@@ -656,6 +656,24 @@ table.summary-table tr:hover td { background: #fafafe; }
 }
 .modal-close:hover { background: rgba(255,255,255,0.2); }
 
+.modal-fullscreen-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.modal-fullscreen-btn:hover { background: rgba(255,255,255,0.24); }
+.modal-fullscreen-btn:active { transform: scale(0.92); }
+
 .wheel-prize-title {
   color: #fff;
   font-size: 22px;
@@ -792,6 +810,37 @@ table.summary-table tr:hover td { background: #fafafe; }
   color: #9ea3d6;
   font-size: 13px;
   padding: 24px 0 6px;
+}
+
+/* ---------- Fullscreen presentation mode ---------- */
+:fullscreen { background: #0f1024; }
+:-webkit-full-screen { background: #0f1024; }
+:fullscreen .wheel-modal-content,
+:-webkit-full-screen .wheel-modal-content {
+  max-width: 900px;
+  padding-top: 40px;
+}
+:fullscreen .wheel-wrap,
+:-webkit-full-screen .wheel-wrap {
+  width: 640px;
+}
+:fullscreen .wheel-prize-title,
+:-webkit-full-screen .wheel-prize-title {
+  font-size: 32px;
+}
+:fullscreen .btn-spin,
+:-webkit-full-screen .btn-spin {
+  font-size: 22px;
+  padding: 20px 42px;
+}
+:fullscreen .winner-modal-content,
+:-webkit-full-screen .winner-modal-content {
+  max-width: 680px;
+  padding: 60px 56px 48px;
+}
+:fullscreen .winner-student-name,
+:-webkit-full-screen .winner-student-name {
+  font-size: 54px;
 }
 
 /* ---------- Responsive ---------- */
