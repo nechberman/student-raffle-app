@@ -55,8 +55,14 @@
       <h2>הוספת תלמיד חדש</h2>
       <div class="quick-add-row">
         <input type="text" id="newStudentInput" placeholder="הקלד שם תלמיד ולחץ Enter..." autocomplete="off">
+        <input type="text" id="newStudentClassInput" placeholder="שיעור / רב (אופציונלי)" autocomplete="off" class="class-input">
         <button id="addStudentBtn" class="btn btn-primary">
           <span class="icon">➕</span> הוסף תלמיד
+        </button>
+      </div>
+      <div class="import-row">
+        <button id="importDefaultStudentsBtn" class="btn btn-outline">
+          <span class="icon">📥</span> ייבוא רשימת 81 התלמידים המובנית
         </button>
       </div>
     </div>
@@ -65,6 +71,12 @@
       <div class="panel-card-header">
         <h2>רשימת תלמידים</h2>
         <span id="studentCount" class="badge-count">0 תלמידים</span>
+      </div>
+      <div class="class-filter-row">
+        <label for="classFilterSelect">סינון לפי שיעור:</label>
+        <select id="classFilterSelect">
+          <option value="">כל השיעורים</option>
+        </select>
       </div>
       <div id="studentsList" class="students-list">
         <!-- populated by JS -->

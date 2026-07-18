@@ -27,6 +27,40 @@
     { id: "p16", name: 'שובר מתנה ע"ס 250 ש"ח רפאלי', icon: "🎁" }
   ];
 
+  // ---------- Default student roster (name + class/rabbi) ----------
+  const DEFAULT_STUDENTS = [
+    ["אברג'ל אליה", "הרב רוטנר"], ["אטלן ישראל אריה", "הרב רוטנר"], ["בכר דוד ניסים", "הרב רוטנר"],
+    ["בר ששת דניאל", "הרב רוטנר"], ["גבאי גיל", "הרב רוטנר"], ["לב טוב שמעון", "הרב רוטנר"],
+    ["רומנו יוסף חיים", "הרב רוטנר"], ["נפתלי ישי", "הרב רוטנר"], ["שוורץ נחמן", "הרב רוטנר"],
+    ["מאיר מחפוד", "הרב רוטנר"], ["שחר משה", "הרב רוטנר"],
+    ["אורליאבסקי יעקב", "הרב מילר"], ["אלמן יאיר", "הרב מילר"], ["בלן יעקב", "הרב מילר"],
+    ["בן שטרית נהוראי", "הרב מילר"], ["גליק משה", "הרב מילר"], ["משי זהב מוטי", "הרב מילר"],
+    ["עובדיה ניתאי", "הרב מילר"], ["פוגל מרדכי צבי", "הרב מילר"], ["קאופמן יעקב", "הרב מילר"],
+    ["משה לווינגר", "הרב מילר"], ["קיי אליהו", "הרב מילר"],
+    ["בר מאיר", "הרב פנט"], ["הוך שמואל צבי", "הרב פנט"], ["כהן חיים דניאל", "הרב פנט"],
+    ["מימוני עובדיה", "הרב פנט"], ["מריאן מאיר", "הרב פנט"], ["צונה יוסף חיים", "הרב פנט"],
+    ["רויטמן עלי", "הרב פנט"], ["שאולוב חיים", "הרב פנט"], ["שבתאי יוסף חיים", "הרב פנט"],
+    ["שמש נהוראי", "הרב פנט"],
+    ["גליק עזריאל", "הרב שפיגל"], ["גריינמן אברהם דוד", "הרב שפיגל"], ["הנפלינג שי", "הרב שפיגל"],
+    ["אלמקייס יהונתן", "הרב שפיגל"], ["ישורון אריאל", "הרב שפיגל"], ["מימון ישראל", "הרב שפיגל"],
+    ["מלכה שלמה משה", "הרב שפיגל"], ["שפירו משה", "הרב שפיגל"],
+    ["לסרי אלימלך", "הרב בצלאל"], ["בכר יעקב", "הרב בצלאל"], ["בן עוליאל יהודה אריה", "הרב בצלאל"],
+    ["לסרי דניאל", "הרב בצלאל"], ["סולמונוביץ נתן", "הרב בצלאל"], ["עדיאל חלדר", "הרב בצלאל"],
+    ["סיינוב יאיר", "הרב בצלאל"],
+    ["אורליאבסקי שלמה", "הרב כהן"], ["בן ישראל מיכאל", "הרב כהן"], ["בן עוליאל משה אליהו", "הרב כהן"],
+    ["דרעי אריאל", "הרב כהן"], ["טוויל משה", "הרב כהן"], ["כהן יצחק", "הרב כהן"],
+    ["לביא אורי", "הרב כהן"], ["סיטבון אליהו", "הרב כהן"], ["מורוז דב בער", "הרב כהן"],
+    ["בלסן ישראל", "הרב קוריץ"], ["דאהן נחמן", "הרב קוריץ"], ["דוד יהונתן", "הרב קוריץ"],
+    ["מאן נחמן", "הרב קוריץ"], ["סלמה משה", "הרב קוריץ"], ["פסו אליהו יוסף", "הרב קוריץ"],
+    ["דביר אברהם", "הרב קוריץ"], ["תורגמן משה", "הרב קוריץ"],
+    ["איפרגן שמעון", "הרב רוטמן"], ["גולדמן דוד", "הרב רוטמן"], ["וולודין משה לייב", "הרב רוטמן"],
+    ["וייסנשטרן נתן", "הרב רוטמן"], ["זולדן יוסף", "הרב רוטמן"], ["כהנא ישראל", "הרב רוטמן"],
+    ["כליפי אהרון חיים", "הרב רוטמן"], ["נחמד דוד", "הרב רוטמן"],
+    ["דייויס דניאל", "הרב ורטהיימר"], ["ועקנין אליהו", "הרב ורטהיימר"], ["לב יוסף", "הרב ורטהיימר"],
+    ["מושיא אוריאל", "הרב ורטהיימר"], ["נמי יהונתן", "הרב ורטהיימר"], ["פלדמן שמואל", "הרב ורטהיימר"],
+    ["פרידמן יוסף", "הרב ורטהיימר"], ["שמואלי רפאל", "הרב ורטהיימר"], ["שמעא חיים", "הרב ורטהיימר"]
+  ].map(([name, className]) => ({ name, className }));
+
   // ---------- State ----------
   // state.students: [{id, name}]
   // state.tickets: { [prizeId]: { [studentId]: count } }
@@ -126,14 +160,42 @@
   // ==================================================
   // STUDENTS TAB
   // ==================================================
-  function addStudent(name) {
+  function addStudent(name, className) {
     const trimmed = name.trim();
     if (!trimmed) return;
-    state.students.push({ id: uid("stu"), name: trimmed });
+    state.students.push({ id: uid("stu"), name: trimmed, className: (className || "").trim() });
     saveState(false);
     renderStudentsList();
     renderStudentSelect();
     showToast("➕ התלמיד נוסף");
+  }
+
+  function importDefaultStudents() {
+    const existingNames = new Set(state.students.map((s) => s.name.trim()));
+    let added = 0;
+    DEFAULT_STUDENTS.forEach((d) => {
+      if (!existingNames.has(d.name.trim())) {
+        state.students.push({ id: uid("stu"), name: d.name, className: d.className });
+        existingNames.add(d.name.trim());
+        added++;
+      }
+    });
+    if (added > 0) {
+      saveState(false);
+      renderStudentsList();
+      renderStudentSelect();
+      renderSummaryTable();
+      renderRaffleCards();
+    }
+    return added;
+  }
+
+  function getAllClassNames() {
+    const set = new Set();
+    state.students.forEach((s) => {
+      if (s.className) set.add(s.className);
+    });
+    return Array.from(set);
   }
 
   function deleteStudent(id) {
@@ -154,25 +216,57 @@
     showToast("🗑️ התלמיד נמחק");
   }
 
+  function renderClassFilterOptions() {
+    const sel = document.getElementById("classFilterSelect");
+    if (!sel) return;
+    const prevVal = sel.value;
+    const classes = getAllClassNames().sort((a, b) => a.localeCompare(b, "he"));
+    sel.innerHTML = '<option value="">כל השיעורים</option>';
+    classes.forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      sel.appendChild(opt);
+    });
+    if (classes.includes(prevVal)) sel.value = prevVal;
+  }
+
   function renderStudentsList() {
     const list = document.getElementById("studentsList");
     const empty = document.getElementById("studentsEmptyState");
     const count = document.getElementById("studentCount");
+    const filterSel = document.getElementById("classFilterSelect");
+    const activeFilter = filterSel ? filterSel.value : "";
+
     count.textContent = state.students.length + " תלמידים";
+    renderClassFilterOptions();
+
+    const visibleStudents = activeFilter
+      ? state.students.filter((s) => s.className === activeFilter)
+      : state.students;
+
     list.innerHTML = "";
     if (state.students.length === 0) {
       empty.classList.add("visible");
+      empty.textContent = "עדיין אין תלמידים. הוסיפו תלמיד ראשון למעלה ⬆️";
+      return;
+    }
+    if (visibleStudents.length === 0) {
+      empty.classList.add("visible");
+      empty.textContent = "אין תלמידים בשיעור שנבחר.";
       return;
     }
     empty.classList.remove("visible");
-    state.students.forEach((s) => {
+    visibleStudents.forEach((s) => {
       const row = document.createElement("div");
       row.className = "student-row";
       const total = studentTotalTickets(s.id);
       row.innerHTML =
         '<div class="student-row-name">' +
         '<span class="student-avatar">' + escapeHtml(s.name.trim().charAt(0) || "?") + "</span>" +
-        "<span>" + escapeHtml(s.name) + "</span>" +
+        "<span>" + escapeHtml(s.name) +
+        (s.className ? ' <span class="class-badge">' + escapeHtml(s.className) + "</span>" : "") +
+        "</span>" +
         "</div>" +
         '<div class="student-row-meta">' +
         '<span class="student-ticket-total">🎟️ ' + total + " כרטיסים</span>" +
@@ -193,18 +287,38 @@
 
   function initStudentsTab() {
     const input = document.getElementById("newStudentInput");
+    const classInput = document.getElementById("newStudentClassInput");
     const addBtn = document.getElementById("addStudentBtn");
-    addBtn.addEventListener("click", () => {
-      addStudent(input.value);
+
+    const doAdd = () => {
+      addStudent(input.value, classInput ? classInput.value : "");
       input.value = "";
+      if (classInput) classInput.value = "";
       input.focus();
-    });
+    };
+
+    addBtn.addEventListener("click", doAdd);
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        addStudent(input.value);
-        input.value = "";
-      }
+      if (e.key === "Enter") doAdd();
     });
+    if (classInput) {
+      classInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doAdd();
+      });
+    }
+
+    const importBtn = document.getElementById("importDefaultStudentsBtn");
+    if (importBtn) {
+      importBtn.addEventListener("click", () => {
+        const added = importDefaultStudents();
+        showToast(added > 0 ? "✅ יובאו " + added + " תלמידים" : "כל התלמידים כבר ברשימה");
+      });
+    }
+
+    const filterSel = document.getElementById("classFilterSelect");
+    if (filterSel) {
+      filterSel.addEventListener("change", renderStudentsList);
+    }
   }
 
   // ==================================================
@@ -214,12 +328,42 @@
     const sel = document.getElementById("studentSelect");
     const prevVal = sel.value;
     sel.innerHTML = '<option value="">— בחר תלמיד —</option>';
-    state.students.forEach((s) => {
-      const opt = document.createElement("option");
-      opt.value = s.id;
-      opt.textContent = s.name;
-      sel.appendChild(opt);
+
+    const withClass = state.students.filter((s) => s.className);
+    const withoutClass = state.students.filter((s) => !s.className);
+
+    const groups = {};
+    withClass.forEach((s) => {
+      if (!groups[s.className]) groups[s.className] = [];
+      groups[s.className].push(s);
     });
+
+    Object.keys(groups)
+      .sort((a, b) => a.localeCompare(b, "he"))
+      .forEach((className) => {
+        const optgroup = document.createElement("optgroup");
+        optgroup.label = className;
+        groups[className].forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.id;
+          opt.textContent = s.name;
+          optgroup.appendChild(opt);
+        });
+        sel.appendChild(optgroup);
+      });
+
+    if (withoutClass.length > 0) {
+      const optgroup = document.createElement("optgroup");
+      optgroup.label = "ללא שיעור";
+      withoutClass.forEach((s) => {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.name;
+        optgroup.appendChild(opt);
+      });
+      sel.appendChild(optgroup);
+    }
+
     if (state.students.some((s) => s.id === prevVal)) sel.value = prevVal;
   }
 
@@ -703,6 +847,9 @@
   // ==================================================
   function init() {
     loadState();
+    if (state.students.length === 0) {
+      importDefaultStudents();
+    }
     initTabs();
     initStudentsTab();
     initAssignTab();
