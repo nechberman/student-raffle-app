@@ -264,9 +264,10 @@
       row.innerHTML =
         '<div class="student-row-name">' +
         '<span class="student-avatar">' + escapeHtml(s.name.trim().charAt(0) || "?") + "</span>" +
-        "<span>" + escapeHtml(s.name) +
-        (s.className ? ' <span class="class-badge">' + escapeHtml(s.className) + "</span>" : "") +
-        "</span>" +
+        '<div class="student-name-col">' +
+        '<span class="student-name-text">' + escapeHtml(s.name) + "</span>" +
+        (s.className ? '<span class="class-badge">' + escapeHtml(s.className) + "</span>" : "") +
+        "</div>" +
         "</div>" +
         '<div class="student-row-meta">' +
         '<span class="student-ticket-total">🎟️ ' + total + " כרטיסים</span>" +

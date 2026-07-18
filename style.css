@@ -348,15 +348,24 @@ body {
 }
 .class-filter-row select:focus { outline: none; border-color: var(--clr-primary); }
 
+.student-name-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.student-name-text {
+  font-weight: 600;
+  line-height: 1.2;
+}
 .class-badge {
   display: inline-block;
+  align-self: flex-start;
   font-size: 11.5px;
   font-weight: 700;
   color: var(--clr-primary);
   background: #ede9fe;
   padding: 2px 9px;
   border-radius: 999px;
-  margin-right: 6px;
 }
 
 .students-list {
