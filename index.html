@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 מערכת הגרלות תלמידים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-decor">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-emoji">🎡</span>
+      <div class="brand-text">
+        <h1>מערכת הגרלות תלמידים</h1>
+        <p>ניהול, שיוך כרטיסים והרצת הגרלות בסגנון גלגל מזל</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span id="autosaveHint" class="autosave-hint">כל שינוי נשמר אוטומטית</span>
+      <button id="saveBtn" class="btn btn-primary btn-save">
+        <span class="icon">💾</span> שמור הכל
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="students">
+    <span class="icon">👥</span> ניהול תלמידים
+  </button>
+  <button class="tab-btn" data-tab="assign">
+    <span class="icon">🎟️</span> שיוך כרטיסים
+  </button>
+  <button class="tab-btn" data-tab="raffle">
+    <span class="icon">🏆</span> מסך ההגרלות
+  </button>
+</nav>
+
+<main class="app-main">
+
+  <!-- ============ TAB: STUDENTS ============ -->
+  <section id="tab-students" class="tab-panel active">
+    <div class="panel-card">
+      <h2>הוספת תלמיד חדש</h2>
+      <div class="quick-add-row">
+        <input type="text" id="newStudentInput" placeholder="הקלד שם תלמיד ולחץ Enter..." autocomplete="off">
+        <button id="addStudentBtn" class="btn btn-primary">
+          <span class="icon">➕</span> הוסף תלמיד
+        </button>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <h2>רשימת תלמידים</h2>
+        <span id="studentCount" class="badge-count">0 תלמידים</span>
+      </div>
+      <div id="studentsList" class="students-list">
+        <!-- populated by JS -->
+      </div>
+      <p id="studentsEmptyState" class="empty-state">עדיין אין תלמידים. הוסיפו תלמיד ראשון למעלה ⬆️</p>
+    </div>
+  </section>
+
+  <!-- ============ TAB: ASSIGN TICKETS ============ -->
+  <section id="tab-assign" class="tab-panel">
+    <div class="panel-card">
+      <h2>שיוך כרטיסי הגרלה לתלמיד</h2>
+      <p class="hint-text">בחרו תלמיד, קבעו כמות כרטיסים (סיכויי זכייה) לכל הגרלה ולחצו "שמור שיוך".</p>
+      <div class="assign-selector">
+        <label for="studentSelect">תלמיד:</label>
+        <select id="studentSelect">
+          <option value="">— בחר תלמיד —</option>
+        </select>
+      </div>
+
+      <div id="assignGrid" class="assign-grid">
+        <!-- populated by JS -->
+      </div>
+
+      <div id="assignActions" class="assign-actions" style="display:none;">
+        <button id="saveAssignBtn" class="btn btn-primary btn-lg">
+          <span class="icon">💾</span> שמור שיוך כרטיסים
+        </button>
+        <span id="assignSavedHint" class="saved-hint"></span>
+      </div>
+      <p id="assignEmptyState" class="empty-state">בחרו תלמיד מהרשימה כדי לשייך לו כרטיסים.</p>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <h2>טבלת סיכום שיוכים</h2>
+      </div>
+      <div id="summaryTableWrap" class="summary-table-wrap">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: RAFFLE ============ -->
+  <section id="tab-raffle" class="tab-panel">
+    <div class="panel-card panel-card--transparent">
+      <h2>הגרלת הפרסים 🎊</h2>
+      <p class="hint-text">לחצו על "הרץ הגרלה" בכרטיס הפרס הרצוי. גלגל המזל יסתובב ויבחר זוכה משתתפי אותה הגרלה.</p>
+    </div>
+    <div id="prizeCardsGrid" class="prize-cards-grid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <p>נבנה באהבה ❤️ עבור ליל הגרלות בלתי נשכח</p>
+</footer>
+
+<!-- ============ WHEEL MODAL ============ -->
+<div id="wheelModal" class="modal-overlay">
+  <div class="wheel-modal-content">
+    <button class="modal-close" id="closeWheelModal">✕</button>
+    <h2 id="wheelPrizeTitle" class="wheel-prize-title"></h2>
+    <div class="wheel-stage">
+      <div class="wheel-pointer">🔻</div>
+      <div class="wheel-wrap">
+        <canvas id="wheelCanvas" width="440" height="440"></canvas>
+        <div id="wheelSpinner" class="wheel-spinner"></div>
+        <div class="wheel-hub">🎯</div>
+      </div>
+    </div>
+    <button id="spinBtn" class="btn btn-spin">
+      <span class="icon">🎡</span> סובב את הגלגל!
+    </button>
+  </div>
+</div>
+
+<!-- ============ WINNER MODAL ============ -->
+<div id="winnerModal" class="modal-overlay">
+  <canvas id="confettiCanvas"></canvas>
+  <div class="winner-modal-content">
+    <div class="winner-burst">🎉</div>
+    <p class="winner-subtitle">והזוכה בהגרלת</p>
+    <h3 id="winnerPrizeName" class="winner-prize-name"></h3>
+    <p class="winner-subtitle">הוא/היא...</p>
+    <h2 id="winnerStudentName" class="winner-student-name"></h2>
+    <button id="closeWinnerModal" class="btn btn-primary btn-lg">
+      <span class="icon">✅</span> מעולה, המשך!
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
