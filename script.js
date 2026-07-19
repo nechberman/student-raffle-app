@@ -543,20 +543,40 @@
     "#84cc16", "#e11d48", "#0ea5e9", "#d946ef"
   ];
 
+  function shuffleArray(arr) {
+    // Fisher-Yates shuffle — purely visual, does not touch saved ticket data
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
   function buildSegments(entries) {
-    const total = entries.reduce((sum, e) => sum + e.count, 0);
+    // Expand each student's tickets into individual unit-tickets, then shuffle them
+    // so the wheel looks like a jumbled mix of tickets instead of neat per-student blocks.
+    // This only changes the visual layout of the wheel — it never touches state.tickets.
+    let units = [];
+    entries.forEach((e, i) => {
+      const color = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
+      for (let k = 0; k < e.count; k++) {
+        units.push({ studentId: e.studentId, name: e.name, color: color });
+      }
+    });
+    units = shuffleArray(units);
+
+    const total = units.length;
+    const sweepEach = 360 / total;
     let cursor = 0;
-    return entries.map((e, i) => {
-      const sweep = (e.count / total) * 360;
+    return units.map((u) => {
       const seg = {
-        studentId: e.studentId,
-        name: e.name,
-        count: e.count,
+        studentId: u.studentId,
+        name: u.name,
+        color: u.color,
         startDeg: cursor,
-        endDeg: cursor + sweep,
-        color: SEGMENT_COLORS[i % SEGMENT_COLORS.length]
+        endDeg: cursor + sweepEach
       };
-      cursor += sweep;
+      cursor += sweepEach;
       return seg;
     });
   }
@@ -580,25 +600,27 @@
       ctx.fillStyle = seg.color;
       ctx.fill();
       ctx.strokeStyle = "rgba(255,255,255,0.35)";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = segments.length > 60 ? 0.5 : 2;
       ctx.stroke();
 
-      // label
-      const midDeg = (seg.startDeg + seg.endDeg) / 2;
-      const midRad = ((midDeg - 90) * Math.PI) / 180;
+      // label — skip on very thin slices (many small tickets) to avoid unreadable clutter
       const sweep = seg.endDeg - seg.startDeg;
-      ctx.save();
-      ctx.translate(cx + Math.cos(midRad) * radius * 0.62, cy + Math.sin(midRad) * radius * 0.62);
-      ctx.rotate(midRad + Math.PI / 2);
-      ctx.fillStyle = "#fff";
-      ctx.font = "bold " + (sweep > 20 ? 15 : sweep > 10 ? 12 : 9) + "px Heebo, Assistant, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.shadowColor = "rgba(0,0,0,0.5)";
-      ctx.shadowBlur = 4;
-      const label = seg.name.length > 12 ? seg.name.slice(0, 11) + "…" : seg.name;
-      ctx.fillText(label, 0, 0);
-      ctx.restore();
+      if (sweep >= 5) {
+        const midDeg = (seg.startDeg + seg.endDeg) / 2;
+        const midRad = ((midDeg - 90) * Math.PI) / 180;
+        ctx.save();
+        ctx.translate(cx + Math.cos(midRad) * radius * 0.62, cy + Math.sin(midRad) * radius * 0.62);
+        ctx.rotate(midRad + Math.PI / 2);
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold " + (sweep > 20 ? 15 : sweep > 10 ? 12 : 9) + "px Heebo, Assistant, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 4;
+        const label = seg.name.length > 12 ? seg.name.slice(0, 11) + "…" : seg.name;
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+      }
     });
 
     // outer ring
@@ -656,8 +678,9 @@
     // (midDeg + R) mod 360. We want that to equal 0 (pointer position), so:
     const fullSpins = 6; // extra full rotations for visual effect
     const baseRotationNeeded = ((-midDeg) % 360 + 360) % 360;
-    // add slight random offset within the segment for realism (not touching to edges)
-    const jitterRange = Math.max(2, (winnerSeg.endDeg - winnerSeg.startDeg) * 0.25);
+    // add slight random offset within the segment for realism, staying safely inside its bounds
+    const segWidth = winnerSeg.endDeg - winnerSeg.startDeg;
+    const jitterRange = segWidth * 0.7;
     const jitter = (Math.random() - 0.5) * jitterRange;
     const totalRotation = fullSpins * 360 + baseRotationNeeded + jitter;
 
